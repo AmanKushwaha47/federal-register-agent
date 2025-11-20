@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PayPal Test</title>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-functions-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-check-compat.js"></script>
+</head>
+<body>
+  <button id="testBtn">Test PayPal Function</button>
+  <script>
+    // Enable Firebase App Check Debug mode
+    self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+
+    // Your Firebase config (from project settings)
+    const firebaseConfig = {
+      apiKey: "AIzaSyCOjehfXZRguMrbcBgxHwWMYapPx5AoHPk",
+      authDomain: "dreamwork-edc33.firebaseapp.com",
+      projectId: "dreamwork-edc33",
+      storageBucket: "dreamwork-edc33.appspot.com",
+      messagingSenderId: "1234567890",
+      appId: "1:634833591772:android:8f3bfae31d0c48a7424319"
+      // ... other config values
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const appCheck = firebase.appCheck();
+    appCheck.activate(null, true); // Use debug provider
+    const functions = firebase.functions();
+    const auth = firebase.auth();
+
+    document.getElementById('testBtn').addEventListener('click', async () => {
+      try {
+        // Sign in first (required for callable functions)
+        await auth.signInAnonymously(); 
+        // or use other auth method:
+        // await auth.signInWithEmailAndPassword(email, password)
+        
+        const createOrder = functions.httpsCallable('createOrderPaypal');
+        const result = await createOrder({
+          amount: 10.99,
+          currency: "USD"
+        });
+        
+        console.log("Order created:", result.data);
+        alert(`Success! Order ID: ${result.data.orderId}`);
+      } catch (error) {
+        console.error("Error:", error);
+        alert(`Error: ${error.message}`);
+      }
+    });
+  </script>
+</body>
+</html>
