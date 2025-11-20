@@ -160,6 +160,34 @@ Popular keywords (sample):
 """
         return help_text.strip()    
 
+    async def _analyze_database_content(self) -> dict:
+        """Return basic info: total documents, recent document date, counts."""
+        def _work():
+            try:
+                conn = self._get_db_connection()
+                cur = conn.cursor()
+
+                cur.execute("SELECT COUNT(*) FROM documents")
+                total_docs = cur.fetchone()[0]
+
+                cur.execute("SELECT MAX(publication_date) FROM documents")
+                latest_date = cur.fetchone()[0]
+
+                cur.execute("SELECT COUNT(*) FROM agencies")
+                total_agencies = cur.fetchone()[0]
+
+                cur.close()
+                conn.close()
+
+                return {
+                    "total_documents": total_docs,
+                    "latest_publication_date": str(latest_date),
+                    "total_agency_entries": total_agencies
+                }
+            except Exception as e:
+                return {"error": str(e)}
+
+        return await self._run_db(_work)
     async def _query_mysql(self, query: str, filters: Optional[Dict[str, Any]] = None, limit: int = 25) -> List[Dict[str, Any]]:
         def _work(q, f, lim):
             try:

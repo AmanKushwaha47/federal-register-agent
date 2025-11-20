@@ -76,8 +76,10 @@ async def debug_search(query: str = "regulation", agency: str = None):
     except Exception as e:
         return {"error": str(e)}
 
+import mysql.connector 
+
 @app.get("/debug/database-info")
-async def _debug_database_content(self) -> str:
+async def debug_database_content() -> str:  
     try:
         conn = mysql.connector.connect(
             host=DB_HOST,
