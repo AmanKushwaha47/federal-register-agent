@@ -305,7 +305,7 @@ Use the help command to discover:
 - Asynchronous I/O for non-blocking operations
 - Connection pooling for database queries
 - Metadata caching with TTL
-- FULLTEXT indexes for O(log n) search complexity
+- FULLTEXT indexes for efficient full-text search
 - Parallel document fetching with ThreadPoolExecutor
 - Content-hash deduplication to avoid redundant storage
 
